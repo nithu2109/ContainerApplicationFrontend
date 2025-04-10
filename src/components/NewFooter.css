@@ -1,0 +1,34 @@
+.custom-footer {
+    position: fixed;
+    bottom: 0;
+    left: 250px;
+    /* Offset to avoid the sidebar */
+    right: 0;
+    background-color: #111;
+    /* Matches dark theme */
+    color: #fff;
+    padding: 1rem 2rem;
+    z-index: 999;
+    border-top: 1px solid #444;
+}
+
+.footer-text {
+    font-size: 14px;
+    color: #aaa;
+}
+
+.footer-author {
+    color: #ff4f4f;
+    font-weight: bold;
+    margin-left: 4px;
+}
+
+.nav-footer .nav-link {
+    color: #bbb !important;
+    font-size: 14px;
+    transition: color 0.2s;
+}
+
+.nav-footer .nav-link:hover {
+    color: #fff !important;
+}

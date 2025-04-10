@@ -1,0 +1,107 @@
+.wrapper {
+    width: 420px;
+    background: #fff;
+    color: #333;
+    border-radius: 10px;
+    padding: 30px 40px;
+}
+
+.wrapper h1 {
+    font-size: 36px;
+    text-align: center;
+}
+
+.wrapper .input-box {
+    position: relative;
+    width: 100%;
+    height: 50px;
+    margin: 30px 0;
+}
+
+.input-box input {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: 2px solid rgb(24, 24, 24);
+    outline: none;
+    border-radius: 40px;
+    font-size: 16px;
+    color: #333;
+    padding: 20px 45px 20px 20px;
+}
+
+.input-box input::placeholder {
+    color: #333;
+}
+
+.input-box .icon {
+    position: absolute;
+    right: 20px;
+    top: 40%;
+    transform: translate(-50%);
+    font-size: 16px;
+}
+
+.wrapper .rememberme-forgot {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14.5px;
+    margin: -15px 0 15px;
+}
+
+.rememberme-forgot label input{
+    accent-color: #333;
+    margin-right: 4px;
+}
+
+.rememberme-forgot a {
+    color: #333;
+    text-decoration: none;
+}
+
+.rememberme-forgot a:hover {
+    text-decoration: underline;
+}
+
+.wrapper button {
+    width: 100%;
+    height:45px;
+    background: #fff;
+    border: none;
+    outline: none;
+    border-radius: 40px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.909);
+    cursor: pointer;
+    font-size: 16px;
+    color: #333;
+    font-weight: 700;
+}
+
+.wrapper .instruction {
+    font-size: 14.5px;
+    text-align: center;
+    margin: 10px 0 10px;
+}
+
+.wrapper .SignUp-Link {
+    font-size: 14.5px;
+    text-align: center;
+    margin: 20px 0 15px;
+}
+
+.SignUp-Link p a {
+    color: #333;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.SignUp-Link p a:hover {
+    text-decoration: underline;
+}
+
+.message {
+    margin-top: 15px;
+    text-align: center;
+    font-weight: bold;
+    color: red;
+}

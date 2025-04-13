@@ -1,15 +1,15 @@
-import React, { useState, useRef, useContext } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import NewFooter from "./NewFooter";
-import { Link } from "react-router-dom";
-import NewSidebar from "./NewSidebar";
+import React, { useState, useContext } from "react";
 import { AuthContext } from "./AuthContext";
+import NewSidebar from "./NewSidebar";
+import Navbar from "./Navbar";
+import NewFooter from "./NewFooter";
+import "./userform.css";
 
 function UserForm() {
   const [projectName, setProjectName] = useState("");
-  const zipFileRef = useRef(null);
-  const dockerFileRef = useRef(null);
-  const composeFileRef = useRef(null);
+  const [zipFile, setZipFile] = useState(null);
+  const [dockerFile, setDockerFile] = useState(null);
+  const [composeFile, setComposeFile] = useState(null);
   const [securityChecks, setSecurityChecks] = useState({
     vulnerabilityScan: false,
     complianceCheck: false,
@@ -17,6 +17,7 @@ function UserForm() {
   });
   const [error, setError] = useState("");
   const [successMsg, setsuccessMsg] = useState("");
+  const [loading, setLoading] = useState(false);
   const { email } = useContext(AuthContext);
 
   const handleSecurityCheckChange = (e) => {
@@ -29,104 +30,157 @@ function UserForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (
-      !projectName ||
-      !zipFileRef.current.files[0] ||
-      !dockerFileRef.current.files[0] ||
-      !composeFileRef.current.files[0]
-    ) {
+    if (!projectName || !zipFile || !dockerFile || !composeFile) {
       setError("Project name and all three files are required!");
       return;
     }
 
-    const hasAnySecurityCheckEnabled = Object.values(securityChecks).some(
-      (value) => value
-    );
+    const hasAnySecurityCheckEnabled = Object.values(securityChecks).some(value => value);
     if (!hasAnySecurityCheckEnabled) {
-      setError("One of the security checks is required");
+      setError("At least one of the security checks is required");
       return;
     }
 
-    // Mock API Response: Pretend validation passed and upload succeeded
+    setLoading(true);
     setTimeout(() => {
-      setsuccessMsg("Project submitted successfully!");
+      setLoading(false);
+      setsuccessMsg("🚀 Project submitted successfully!");
       setError("");
-    }, 1000);
+    }, 1500);
   };
 
   return (
     <>
       <NewSidebar activePage="userform" />
-      <main className="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
-        <div className="container-fluid py-4">
-          <div className="row">
-            <div className="col-12">
-              <div className="card my-4">
-                <div className="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                  <div className="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                    <h6 className="text-white text-capitalize ps-3">Upload Project</h6>
+      <Navbar />
+      <main
+        className="main-content d-flex align-items-center justify-content-center"
+        style={{
+          marginLeft: "250px",
+          backgroundColor: "#ffffff",
+          height: "100vh",
+          padding: "0 20px",
+          overflow: "hidden",
+        }}
+      >
+        <div className="container py-4">
+          <div className="row justify-content-center">
+            <div className="col-12 d-flex justify-content-center">
+              <div className="form-card">
+                <h3 className="text-center mb-4">📦 Submit Your Project</h3>
+                <form onSubmit={handleSubmit}>
+                  {/* Project Name */}
+                  <div className="mb-3">
+                    <label className="form-label fw-bold">🔤 Project Name</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="Enter project name"
+                      value={projectName}
+                      onChange={(e) => setProjectName(e.target.value)}
+                    />
                   </div>
-                </div>
-                <div className="card-body px-4 pb-2">
-                  <form onSubmit={handleSubmit}>
-                    <div className="mb-3">
-                      <label>Project Name</label>
+
+                  {/* Zip File */}
+                  <div className="mb-3">
+                    <label className="form-label fw-bold">📁 Upload Zip File</label>
+                    <div className="d-flex gap-2">
                       <input
-                        type="text"
+                        type="file"
                         className="form-control"
-                        value={projectName}
-                        onChange={(e) => setProjectName(e.target.value)}
+                        onChange={(e) => setZipFile(e.target.files[0])}
                       />
+                      {zipFile && (
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-outline-danger"
+                          onClick={() => setZipFile(null)}
+                        >
+                          ❌
+                        </button>
+                      )}
                     </div>
-                    <div className="mb-3">
-                      <label>Upload Zip File</label>
-                      <input type="file" className="form-control" ref={zipFileRef} />
-                    </div>
-                    <div className="mb-3">
-                      <label>Upload Dockerfile</label>
-                      <input type="file" className="form-control" ref={dockerFileRef} />
-                    </div>
-                    <div className="mb-3">
-                      <label>Upload Docker Compose File</label>
-                      <input type="file" className="form-control" ref={composeFileRef} />
-                    </div>
-                    <div className="mb-3 form-check">
+                    {zipFile && <small className="text-muted">{zipFile.name}</small>}
+                  </div>
+
+                  {/* Dockerfile */}
+                  <div className="mb-3">
+                    <label className="form-label fw-bold">🐳 Upload Dockerfile</label>
+                    <div className="d-flex gap-2">
                       <input
-                        type="checkbox"
-                        className="form-check-input"
-                        id="vulnerabilityScan"
-                        checked={securityChecks.vulnerabilityScan}
-                        onChange={handleSecurityCheckChange}
+                        type="file"
+                        className="form-control"
+                        onChange={(e) => setDockerFile(e.target.files[0])}
                       />
-                      <label className="form-check-label">Vulnerability Scan</label>
+                      {dockerFile && (
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-outline-danger"
+                          onClick={() => setDockerFile(null)}
+                        >
+                          ❌
+                        </button>
+                      )}
                     </div>
-                    <div className="mb-3 form-check">
+                    {dockerFile && <small className="text-muted">{dockerFile.name}</small>}
+                  </div>
+
+                  {/* Compose File */}
+                  <div className="mb-3">
+                    <label className="form-label fw-bold">🧩 Upload Compose File</label>
+                    <div className="d-flex gap-2">
                       <input
-                        type="checkbox"
-                        className="form-check-input"
-                        id="complianceCheck"
-                        checked={securityChecks.complianceCheck}
-                        onChange={handleSecurityCheckChange}
+                        type="file"
+                        className="form-control"
+                        onChange={(e) => setComposeFile(e.target.files[0])}
                       />
-                      <label className="form-check-label">Compliance Check</label>
+                      {composeFile && (
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-outline-danger"
+                          onClick={() => setComposeFile(null)}
+                        >
+                          ❌
+                        </button>
+                      )}
                     </div>
-                    <div className="mb-3 form-check">
-                      <input
-                        type="checkbox"
-                        className="form-check-input"
-                        id="runtimeAnalysis"
-                        checked={securityChecks.runtimeAnalysis}
-                        onChange={handleSecurityCheckChange}
-                      />
-                      <label className="form-check-label">Runtime Analysis</label>
+                    {composeFile && <small className="text-muted">{composeFile.name}</small>}
+                  </div>
+
+                  {/* Security Checks */}
+                  <div className="mb-3">
+                    <label className="form-label fw-bold d-block">🛡️ Security Checks</label>
+                    <div className="d-flex flex-wrap gap-4">
+                      {["vulnerabilityScan", "complianceCheck", "runtimeAnalysis"].map((key) => (
+                        <div className="form-check" key={key}>
+                          <input
+                            type="checkbox"
+                            className="form-check-input"
+                            id={key}
+                            checked={securityChecks[key]}
+                            onChange={handleSecurityCheckChange}
+                          />
+                          <label className="form-check-label">
+                            {key === "vulnerabilityScan"
+                              ? "Vulnerability Scan"
+                              : key === "complianceCheck"
+                              ? "Compliance Check"
+                              : "Runtime Analysis"}
+                          </label>
+                        </div>
+                      ))}
                     </div>
-                    {error && <div className="alert alert-danger">{error}</div>}
-                    {successMsg && <div className="alert alert-success">{successMsg}</div>}
-                    <button type="submit" className="btn btn-primary">
-                      Submit
+                  </div>
+
+                  {error && <div className="alert alert-danger">{error}</div>}
+                  {successMsg && <div className="alert alert-success">{successMsg}</div>}
+
+                  <div className="text-center">
+                    <button type="submit" className="btn btn-primary px-4">
+                      {loading ? "Uploading..." : "Submit"}
                     </button>
-                  </form>
-                </div>
+                  </div>
+                </form>
               </div>
             </div>
           </div>

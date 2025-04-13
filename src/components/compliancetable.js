@@ -1,92 +1,102 @@
-import React, { useContext, useEffect, useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
-import BootstrapTable from "react-bootstrap-table-next";
-import paginationFactory from "react-bootstrap-table2-paginator";
+import React, { useEffect, useState, useContext } from "react";
 import { Container } from "react-bootstrap";
-import ToolkitProvider from "react-bootstrap-table2-toolkit/dist/react-bootstrap-table2-toolkit";
 import NewFooter from "./NewFooter";
 import NewSidebar from "./NewSidebar";
+import Navbar from "./Navbar";
 import { AuthContext } from "./AuthContext";
+import "./compliancetable.css";
 
 function ComplianceTable() {
-  const [projectsExist, setProjectsExist] = useState(false);
-  const [complianceTable, setComplianceTable] = useState([]);
+  const [complianceData, setComplianceData] = useState([]);
   const { email } = useContext(AuthContext);
 
   useEffect(() => {
-    // Simulate mock compliance results
     setTimeout(() => {
-      setProjectsExist(true);
-      setComplianceTable([
-        { id: 1, control: "CIS-1.1", status: "Fail", date: "2025-04-08" },
-        { id: 2, control: "CIS-1.2", status: "Pass", date: "2025-04-07" },
-        { id: 3, control: "PCI-DSS 2.1", status: "Fail", date: "2025-04-06" },
+      setComplianceData([
+        {
+          id: 1,
+          check: "Avoid root user in Dockerfile",
+          result: "Failed",
+          description: "Container runs as root",
+          fixHint: "Add USER instruction",
+        },
+        {
+          id: 2,
+          check: "Use COPY instead of ADD",
+          result: "Pass",
+          description: "Best practice for Dockerfile",
+          fixHint: "-",
+        },
+        {
+          id: 3,
+          check: "Limit container capabilities",
+          result: "Failed",
+          description: "Too many kernel capabilities granted",
+          fixHint: "Use --cap-drop=ALL",
+        },
       ]);
-    }, 1000);
+    }, 500);
   }, []);
-
-  const columns = [
-    { dataField: "id", text: "Compliance ID" },
-    { dataField: "control", text: "Control" },
-    {
-      dataField: "status",
-      text: "Status",
-      formatter: (cell) => {
-        const statusClass = cell === "Pass" ? "text-success" : "text-danger";
-        return <span className={statusClass}>{cell}</span>;
-      },
-    },
-    { dataField: "date", text: "Date" },
-  ];
 
   return (
     <>
       <NewSidebar activePage="compliance" />
-      <main className="main-content position-relative max-height-vh-100 h-100 border-radius-lg "  style={{ marginLeft: "250px" }}>
-        <div className="container-fluid py-4">
-          <div className="row">
-            <div className="col-12">
-              <div className="card my-4">
-                <div className="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-                  <div className="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                    <h6 className="text-white text-capitalize ps-3">
-                      Compliance Table
-                    </h6>
-                  </div>
-                </div>
-                <div className="card-body px-0 pb-2">
-                  <div className="table-responsive p-0">
-                    {projectsExist && complianceTable.length > 0 ? (
-                      <Container>
-                        <ToolkitProvider
-                          keyField="id"
-                          data={complianceTable}
-                          columns={columns}
-                          search
-                        >
-                          {(props) => (
-                            <div>
-                              <BootstrapTable
-                                {...props.baseProps}
-                                striped
-                                hover
-                                pagination={paginationFactory()}
-                              />
-                            </div>
-                          )}
-                        </ToolkitProvider>
-                      </Container>
-                    ) : (
-                      <p className="container">No compliance results to display.</p>
-                    )}
-                  </div>
-                </div>
-              </div>
+      <Navbar />
+      <main
+        className="main-content"
+        style={{
+          marginLeft: "250px",
+          paddingTop: "70px",
+          backgroundColor: "#ffffff",
+          minHeight: "100vh",
+        }}
+      >
+        <Container>
+          <div className="compliance-container shadow rounded p-4">
+            <h4 className="mb-3 fw-bold">📋 Compliance</h4>
+            <p className="mb-4 text-muted">
+              CIS Benchmark or OpenSCAP Results:
+            </p>
+            <div className="table-responsive">
+              <table className="table compliance-table table-bordered">
+                <thead className="table-light">
+                  <tr>
+                    <th>Check</th>
+                    <th>Result</th>
+                    <th>Description</th>
+                    <th>Fix Hint</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {complianceData.map((item) => (
+                    <tr key={item.id}>
+                      <td>{item.check}</td>
+                      <td className={item.result === "Pass" ? "text-success" : "text-danger"}>
+                        {item.result === "Pass" ? "✅ Pass" : "❌ Failed"}
+                      </td>
+                      <td>{item.description}</td>
+                      <td>
+                        {item.fixHint.includes("--") ? (
+                          <code>{item.fixHint}</code>
+                        ) : item.fixHint.includes("USER") ? (
+                          <>
+                            Add <code>USER</code> instruction
+                          </>
+                        ) : (
+                          item.fixHint
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {complianceData.length === 0 && (
+                <p className="text-muted">No compliance results to show.</p>
+              )}
             </div>
           </div>
-          <NewFooter />
-        </div>
+        </Container>
+        <NewFooter />
       </main>
     </>
   );

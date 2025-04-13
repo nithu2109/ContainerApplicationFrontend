@@ -1,0 +1,54 @@
+.custom-navbar {
+    position: fixed;
+    top: 0;
+    left: 250px; /* to accommodate the sidebar width */
+    right: 0;
+    height: 60px;
+    background: #1e1e2f;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 0 2rem;
+    z-index: 998; /* keep just below sidebar */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  .navbar-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #f14d4d;
+    font-weight: bold;
+    left: 50%;
+  }
+  
+  .navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .navbar-text {
+    color: white;
+  }
+  
+  .logout-button {
+    background: transparent;
+    border: 1px solid #ff4f4f;
+    color: #ff4f4f;
+    padding: 6px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .logout-button:hover {
+    background: #ff4f4f;
+    color: white;
+  }  

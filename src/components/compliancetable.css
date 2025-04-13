@@ -1,0 +1,33 @@
+.compliance-container {
+    background-color: #ffffff;
+    margin-top: 30px;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
+  }
+  
+  .compliance-table th,
+  .compliance-table td {
+    vertical-align: middle;
+    text-align: left;
+  }
+  
+  .compliance-table td code {
+    background-color: #f1f1f1;
+    padding: 3px 6px;
+    border-radius: 5px;
+    font-size: 0.85rem;
+    font-family: "Courier New", Courier, monospace;
+  }
+  
+  .compliance-table .text-danger {
+    font-weight: bold;
+    color: #dc3545;
+  }
+  
+  .compliance-table .text-success {
+    font-weight: bold;
+    color: #198754;
+  }
+  

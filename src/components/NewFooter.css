@@ -4,12 +4,12 @@
     left: 250px;
     /* Offset to avoid the sidebar */
     right: 0;
-    background-color: #111;
+    background-color: #1e1e2f;
     /* Matches dark theme */
     color: #fff;
-    padding: 1rem 2rem;
+    padding: 10px 0;
     z-index: 999;
-    border-top: 1px solid #444;
+    border-top: 1px solid #1e1e2f;
 }
 
 .footer-text {

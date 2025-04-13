@@ -1,0 +1,63 @@
+.bg-dark-theme h3,
+.bg-dark-theme label,
+.bg-dark-theme .form-check-label {
+  color: #ffffff;
+}
+
+.form-card {
+    background-color: #ffffff;
+    color: #1e1e2f;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 980px;
+    max-height: 95vh;
+    overflow: visible;
+  }  
+
+.form-card:hover {
+  transform: translateY(-3px);
+}
+
+.form-label {
+  font-size: 16px;
+}
+
+input[type="file"]::file-selector-button:hover {
+  background-color: #3c096c;
+}
+
+.form-label,
+.form-check-label {
+color: ##1e1e2f;
+font-weight: 500;
+}
+
+input.form-control {
+background-color: #ffffff;
+color: #2a2a40;
+border: 1px solid #444;
+}
+
+input.form-control::placeholder {
+color: #aaa;
+}
+
+input[type="file"]::file-selector-button {
+background-color: #5a189a;
+color: #ffffff;
+border: none;
+padding: 6px 12px;
+border-radius: 4px;
+cursor: pointer;
+}
+
+.btn-primary {
+background-color: #5a189a;
+border: none;
+}
+
+.btn-primary:hover {
+background-color: #3c096c;
+}

@@ -11,32 +11,28 @@ function ComplianceTable() {
   const { email } = useContext(AuthContext);
 
   useEffect(() => {
-    setTimeout(() => {
-      setComplianceData([
-        {
-          id: 1,
-          check: "Avoid root user in Dockerfile",
-          result: "Failed",
-          description: "Container runs as root",
-          fixHint: "Add USER instruction",
-        },
-        {
-          id: 2,
-          check: "Use COPY instead of ADD",
-          result: "Pass",
-          description: "Best practice for Dockerfile",
-          fixHint: "-",
-        },
-        {
-          id: 3,
-          check: "Limit container capabilities",
-          result: "Failed",
-          description: "Too many kernel capabilities granted",
-          fixHint: "Use --cap-drop=ALL",
-        },
-      ]);
-    }, 500);
-  }, []);
+    const fetchComplianceData = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/compliance-data");
+        const data = await response.json();
+
+        if (data.data.length > 0) {
+          const formattedData = data.data.map((item) => ({
+            id: item.id || "N/A",
+            check: item.check || "N/A",
+            result: item.result || "N/A",
+            description: item.description || "N/A",
+            fixHint: item.fixHint || "-"
+          }));
+          setComplianceData(formattedData);
+        }
+      } catch (error) {
+        console.error("❌ Error fetching compliance data:", error);
+      }
+    };
+
+    fetchComplianceData();
+  }, [email]);
 
   return (
     <>

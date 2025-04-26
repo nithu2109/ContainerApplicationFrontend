@@ -18,22 +18,18 @@ const Sign_up = () => {
     const [passwordTouched, setPasswordTouched] = useState(false);
     const [confirmPasswordTouched, setConfirmPasswordTouched] = useState(false);
 
-
     const [nameError, setNameError] = useState('');
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [confirmPasswordError, setConfirmPasswordError] = useState('');
 
-    // Validation Functions
-    const isValidName = (name) => {
-        const regex = /^[A-Za-z ]{2}[A-Za-z ]*$/;
-        return regex.test(name.trim());
-    };
+    // Validation
+    const isValidName = (name) => /^[A-Za-z]{2,}[A-Za-z ]*$/.test(name.trim());
     const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     const isValidPassword = (password) =>
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^])[A-Za-z\d@$!%*?&#^]{8,}$/.test(password);
 
-    // Field change handlers with validation
+    // Change handlers
     const handleNameChange = (e) => {
         const value = e.target.value;
         setName(value);
@@ -62,7 +58,7 @@ const Sign_up = () => {
         setConfirmPasswordError(value === password ? '' : '❌ Passwords do not match');
     };
 
-    // Final Submission
+    // Submit
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -77,14 +73,15 @@ const Sign_up = () => {
         }
 
         try {
-            const response = await axios.post('http://localhost:5000/api/auth/signup', {
+            const response = await axios.post('http://localhost:8000/signup', {
                 name,
                 email,
-                password,
+                password
             });
             setMessage(`✅ ${response.data.message}`);
+            setTimeout(() => navigate('/'), 2000);  // Redirect to Sign In
         } catch (err) {
-            setMessage(err.response?.data?.message || 'Sign up failed');
+            setMessage(err.response?.data?.message || '❌ Sign up failed');
         }
     };
 
@@ -120,7 +117,7 @@ const Sign_up = () => {
                     />
                     <MdEmail className="icon" />
                 </div>
-                {emailError && <p className="error">{emailError}</p>}
+                {emailTouched && emailError && <p className="error">{emailError}</p>}
 
                 <div className="input-box">
                     <input
@@ -133,7 +130,7 @@ const Sign_up = () => {
                     />
                     <FaLock className="icon" />
                 </div>
-                {passwordError && <p className="error">{passwordError}</p>}
+                {passwordTouched && passwordError && <p className="error">{passwordError}</p>}
 
                 <div className="input-box">
                     <input
@@ -146,7 +143,7 @@ const Sign_up = () => {
                     />
                     <FaLock className="icon" />
                 </div>
-                {confirmPasswordError && <p className="error">{confirmPasswordError}</p>}
+                {confirmPasswordTouched && confirmPasswordError && <p className="error">{confirmPasswordError}</p>}
 
                 <button type="submit">Sign Up</button>
 

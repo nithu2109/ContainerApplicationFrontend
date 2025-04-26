@@ -39,10 +39,37 @@
   }
   
   .row-high {
-    background-color: #fff3cd; /* warning */
+    background-color: #fff3cd;
   }
   
   .row-critical {
-    background-color: #f8d7da; /* danger */
+    background-color: #f8d7da;
+  }
+
+.severity-label {
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 5px;
+    display: inline-block;
+  }
+  
+  .severity-label.critical {
+    color: #fff;
+    background-color: #dc3545;
+  }
+  
+  .severity-label.high {
+    color: #212529;
+    background-color: #ffc107;
+  }
+  
+  .severity-label.medium {
+    color: #0c63e4;
+    background-color: #dbeafe;
+  }
+  
+  .severity-label.low {
+    color: #198754;
+    background-color: #d1e7dd;
   }
   

@@ -1,11 +1,30 @@
-import React, { useContext } from "react";
+import React, { useEffect, useState } from "react";
 import NewFooter from "./NewFooter";
 import NewSidebar from "./NewSidebar";
 import Navbar from "./Navbar";
-import { AuthContext } from "./AuthContext";
+import axios from "axios";
 
 function Dashboard() {
-  // const { email } = useContext(AuthContext);
+  const [dashboardData, setDashboardData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const email = localStorage.getItem('userEmail');
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const response = await axios.post('http://localhost:8000/get-dashboard-context', { email });
+        setDashboardData(response.data);
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (email) {
+      fetchDashboardData();
+    }
+  }, [email]);
 
   return (
     <>
@@ -23,45 +42,51 @@ function Dashboard() {
             color: "#1e1e2f",
           }}
         >
-          <h1 className="text-place">Welcome User</h1>
+          <h1 className="text-place">Welcome</h1>
 
-          {/* 📊 Metrics Table */}
+          {/* 📊 Metrics Section */}
           <div className="card shadow-sm p-4 rounded" style={{ width: "100%", maxWidth: "800px" }}>
             <h5 className="mb-3 fw-bold">📈 Dashboard Metrics</h5>
-            <table className="table table-bordered table-striped">
-              <thead className="table-light">
-                <tr>
-                  <th>Metric</th>
-                  <th>Value Example</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Total Projects Uploaded</td>
-                  <td>3</td>
-                </tr>
-                <tr>
-                  <td>Total Containers Scanned</td>
-                  <td>5</td>
-                </tr>
-                <tr>
-                  <td>Total Vulnerabilities Found</td>
-                  <td>12</td>
-                </tr>
-                <tr>
-                  <td>Compliance Pass Rate</td>
-                  <td>85%</td>
-                </tr>
-                <tr>
-                  <td>Open Alerts (Critical/Warning)</td>
-                  <td>2 Critical, 5 Warnings</td>
-                </tr>
-                <tr>
-                  <td>Last Scan Date</td>
-                  <td>2025-04-12, 6:00 PM</td>
-                </tr>
-              </tbody>
-            </table>
+
+            {loading ? (
+              <p>Loading dashboard metrics...</p>
+            ) : dashboardData && dashboardData.up_time !== "N/A" ? (
+              <table className="table table-bordered table-striped">
+                <thead className="table-light">
+                  <tr>
+                    <th>Metric</th>
+                    <th>Value</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>🕒 Uptime</td>
+                    <td>{dashboardData.up_time}</td>
+                  </tr>
+                  <tr>
+                    <td>🛡️ Compliance Status</td>
+                    <td>{dashboardData.compliance_status}</td>
+                  </tr>
+                  <tr>
+                    <td>🚨 Alerts</td>
+                    <td>{dashboardData.alerts}</td>
+                  </tr>
+                  <tr>
+                    <td>🐞 Vulnerabilities Found</td>
+                    <td>{dashboardData.vulnerability}</td>
+                  </tr>
+                </tbody>
+              </table>
+            ) : (
+              <div className="text-center">
+                <p style={{ fontSize: "18px", fontWeight: "500", color: "#555" }}>
+                  📭 No project data found.
+                </p>
+                <p style={{ fontSize: "16px", color: "#888" }}>
+                  Upload your first project to see container metrics and insights!
+                </p>
+              </div>
+            )}
           </div>
         </div>
         <NewFooter />

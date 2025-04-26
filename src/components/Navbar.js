@@ -4,6 +4,7 @@ import './Navbar.css'; // Reuse sidebar CSS for consistent styling
 
 function Navbar() {
   const navigate = useNavigate();
+  const email = localStorage.getItem('userEmail');
   return (
     <nav className="custom-navbar">
       <div className="navbar-container">
@@ -13,7 +14,7 @@ function Navbar() {
         </a>
 
         <div className="navbar-right">
-          <span className="navbar-text">Hi User1</span>
+          <span className="navbar-text">Hi {email}</span>
           <button
             className="logout-button"
             onClick={() => navigate('/')}

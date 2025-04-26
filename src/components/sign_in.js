@@ -29,13 +29,19 @@ const Sign_in = () => {
         }
 
         try {
-            const response = await axios.post('http://localhost:5000/api/auth/signin', {
+            const response = await axios.post('http://localhost:8000/validate-user', {
                 email,
                 password
             });
-            setMessage(`✅ ${response.data.message}`);
+
+            if (response.data.success) {
+                localStorage.setItem('userEmail', email); // store email for dashboard use
+                navigate('/components/dashboard'); // navigate to dashboard
+            } else {
+                setMessage('❌ Invalid credentials');
+            }
         } catch (err) {
-            setMessage(err.response?.data?.message || 'Sign in failed');
+            setMessage(err.response?.data?.message || '❌ Sign in failed');
         }
     };
 

@@ -8,42 +8,29 @@ import Navbar from "./Navbar";
 import "./monitoringtable.css";
 
 function MonitoringDataTable() {
-  const [events, setEvents] = useState([]);
   const { email } = useContext(AuthContext);
+  const [monitoringData, setMonitoringData] = useState([]);
 
   useEffect(() => {
-    setTimeout(() => {
-      setEvents([
-        {
-          id: 1,
-          container: "nginx-dev",
-          eventType: "Suspicious Write",
-          description: "Unexpected file write in /etc/passwd",
-          timestamp: "2025-04-12 18:00",
-          severity: "High",
-        },
-        {
-          id: 2,
-          container: "api-service",
-          eventType: "Network Access",
-          description: "Outbound connection on unknown port",
-          timestamp: "2025-04-12 18:03",
-          severity: "Critical",
-        },
-      ]);
-    }, 500);
-  }, []);
+    const fetchMonitoringData = async () => {
+      try {
+        console.log("📧 Email sent to backend (currently not sending email, just fetching all):", email);
 
-  const getRowClass = (severity) => {
-    switch (severity) {
-      case "Critical":
-        return "row-critical";
-      case "High":
-        return "row-high";
-      default:
-        return "";
-    }
-  };
+        const response = await fetch("http://localhost:8000/monitoring-data", {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        });
+
+        const result = await response.json();
+        console.log("📦 Monitoring Data fetched:", result);
+        setMonitoringData(result);
+      } catch (error) {
+        console.error("❌ Failed to fetch monitoring data:", error);
+      }
+    };
+
+    fetchMonitoringData();
+  }, []);
 
   return (
     <>
@@ -58,36 +45,45 @@ function MonitoringDataTable() {
           minHeight: "100vh",
         }}
       >
-        <div className="monitoring-wrapper">
-          <div className="monitoring-card">
-            <h5 className="monitoring-title">📊 Monitoring Container Data</h5>
-            <div className="table-responsive">
-              <table className="monitoring-table">
-                <thead>
-                  <tr>
-                    <th>Container</th>
-                    <th>Event Type</th>
-                    <th>Description</th>
-                    <th>Timestamp</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {events.map((event) => (
-                    <tr key={event.id} className={getRowClass(event.severity)}>
-                      <td>{event.container}</td>
-                      <td>{event.eventType}</td>
-                      <td>{event.description}</td>
-                      <td>{event.timestamp}</td>
+        <Container>
+          <div className="monitoring-wrapper">
+            <div className="monitoring-card">
+              <h5 className="monitoring-title">📊 Monitoring Metrics</h5>
+              <div className="table-responsive">
+                <table className="monitoring-table table table-bordered">
+                  <thead className="table-dark">
+                    <tr>
+                      <th>Container</th>
+                      <th>Event Type</th>
+                      <th>Description</th>
+                      <th>Severity</th>
+                      <th>Timestamp</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-              {events.length === 0 && (
-                <p className="text-muted text-center mt-3">No events to display.</p>
-              )}
+                  </thead>
+                  <tbody>
+                    {monitoringData.length > 0 ? (
+                      monitoringData.map((item, idx) => (
+                        <tr key={idx}>
+                          <td>{item.container}</td>
+                          <td>{item.eventType}</td>
+                          <td>{item.description}</td>
+                          <td>{item.severity}</td>
+                          <td>{item.timestamp}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="5" className="text-center">
+                          No monitoring data yet. Please upload a project.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
-        </div>
+        </Container>
         <NewFooter />
       </main>
     </>

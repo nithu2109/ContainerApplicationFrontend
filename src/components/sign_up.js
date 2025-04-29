@@ -86,6 +86,7 @@ const Sign_up = () => {
     };
 
     return (
+        <div className='background'>
         <div className='wrapper'>
             <form onSubmit={handleSubmit}>
                 <h1>Sign Up</h1>
@@ -153,6 +154,7 @@ const Sign_up = () => {
 
                 {message && <p className="message">{message}</p>}
             </form>
+        </div>
         </div>
     );
 };

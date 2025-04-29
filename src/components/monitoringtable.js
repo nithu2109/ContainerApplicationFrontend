@@ -6,31 +6,38 @@ import NewSidebar from "./NewSidebar";
 import { AuthContext } from "./AuthContext";
 import Navbar from "./Navbar";
 import "./monitoringtable.css";
+import { useNavigate } from "react-router-dom";
 
 function MonitoringDataTable() {
   const { email } = useContext(AuthContext);
   const [monitoringData, setMonitoringData] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
+    if (!email) {
+      navigate('/');
+      return;
+    }
+
     const fetchMonitoringData = async () => {
       try {
-        console.log("📧 Email sent to backend (currently not sending email, just fetching all):", email);
+        console.log("📧 Sending email to backend", email);
 
-        const response = await fetch("http://localhost:8000/monitoring-data", {
+        const response = await fetch(`http://localhost:8000/monitoring-data?email=${email}`, {
           method: "GET",
           headers: { "Content-Type": "application/json" },
         });
 
         const result = await response.json();
         console.log("📦 Monitoring Data fetched:", result);
-        setMonitoringData(result);
+        setMonitoringData(result.data);
       } catch (error) {
         console.error("❌ Failed to fetch monitoring data:", error);
       }
     };
 
     fetchMonitoringData();
-  }, []);
+  }, [email, navigate]);
 
   return (
     <>

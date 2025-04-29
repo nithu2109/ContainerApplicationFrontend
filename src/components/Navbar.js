@@ -1,10 +1,12 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Navbar.css'; // Reuse sidebar CSS for consistent styling
+import './Navbar.css';
+import { useContext } from 'react';
+import { AuthContext } from './AuthContext';
 
 function Navbar() {
   const navigate = useNavigate();
-  const email = localStorage.getItem('userEmail');
+  const { email } = useContext(AuthContext);
   return (
     <nav className="custom-navbar">
       <div className="navbar-container">
@@ -17,7 +19,10 @@ function Navbar() {
           <span className="navbar-text">Hi {email}</span>
           <button
             className="logout-button"
-            onClick={() => navigate('/')}
+            onClick={() => {
+              localStorage.removeItem('userEmail');
+              navigate('/');
+            }}
           >
             Logout
           </button>

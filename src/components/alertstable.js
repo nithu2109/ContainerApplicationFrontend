@@ -1,37 +1,77 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Container } from "react-bootstrap";
 import NewFooter from "./NewFooter";
 import NewSidebar from "./NewSidebar";
 import Navbar from "./Navbar";
 import "./alertsTable.css";
+import { useNavigate } from "react-router-dom";
 
 function Alertstable() {
   const [logFile, setLogFile] = useState(null);
   const [alerts, setAlerts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const navigate = useNavigate();
+  const email = localStorage.getItem('userEmail');
+
+  useEffect(() => {
+    if (!email) {
+      navigate('/');
+    }
+  }, [email, navigate]);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-    if (file) setLogFile(file);
+    if (file) {
+      setLogFile(file);
+      setAlerts([]);
+      setSubmitted(false);
+    }
   };
 
-  const handleSubmit = () => {
-    if (!logFile) return;
+  const handleSubmit = async () => {
+    if (!logFile || submitted) return;
 
-    // Simulate API response
-    const mockData = [
-      { id: 1, type: "SQL Injection", severity: "High", date: "2025-04-08" },
-      { id: 2, type: "XSS Attempt", severity: "Medium", date: "2025-04-07" },
-      { id: 3, type: "Login Failure", severity: "Low", date: "2025-04-06" },
-    ];
+    setLoading(true);
 
-    setTimeout(() => {
-      setAlerts(mockData);
-    }, 1000);
+    try {
+      // Upload file first to backend
+      const formData = new FormData();
+      formData.append('alerts_log_file', logFile);
+      formData.append('email', email);
+
+      const uploadResponse = await fetch('http://localhost:8000/uploadLogs', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!uploadResponse.ok) {
+        throw new Error('Failed to upload log file.');
+      }
+
+      console.log('✅ Log file uploaded to database');
+
+      // Fetch alerts after upload
+      const alertsResponse = await fetch("http://localhost:8000/alerts");
+      if (!alertsResponse.ok) {
+        throw new Error("Failed to fetch alerts");
+      }
+
+      const data = await alertsResponse.json();
+      setAlerts(data);
+      setSubmitted(true);
+    } catch (error) {
+      console.error("❌ Error during alerts upload/fetch:", error);
+      setAlerts([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const getSeverityStyle = (severity) => {
     switch (severity) {
       case "High":
+      case "Critical":
         return "text-danger fw-bold";
       case "Medium":
         return "text-warning fw-bold";
@@ -56,7 +96,7 @@ function Alertstable() {
           paddingBottom: "40px",
         }}
       >
-        <div className="container py-4">
+        <Container className="py-4">
           <div className="row justify-content-center">
             <div className="col-lg-10 col-xl-9">
               <div className="form-card shadow-lg p-4 rounded bg-white">
@@ -73,48 +113,45 @@ function Alertstable() {
                   <button
                     className="btn btn-primary"
                     onClick={handleSubmit}
-                    disabled={!logFile}
+                    disabled={!logFile || submitted}
                   >
-                    Submit Log File
+                    {loading ? "Loading..." : submitted ? "Submitted ✅" : "Submit Log File"}
                   </button>
                 </div>
 
                 {/* Alert Table */}
-                {alerts.length > 0 ? (
-                  <div className="table-responsive">
-                    <table className="table table-bordered table-striped">
-                      <thead className="table-light">
-                        <tr>
-                          <th>ID</th>
-                          <th>Type</th>
-                          <th>Severity</th>
-                          <th>Date</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {alerts.map((alert) => (
-                          <tr key={alert.id}>
-                            <td>{alert.id}</td>
-                            <td>{alert.type}</td>
-                            <td className={getSeverityStyle(alert.severity)}>
-                              {alert.severity}
-                            </td>
-                            <td>{alert.date}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : (
-                  <p className="text-muted text-center">
-                    No alerts to display. Please upload a log file.
-                  </p>
-                )}
+{alerts.length > 0 ? (
+  <div className="table-responsive">
+    <table className="table table-bordered table-striped">
+      <thead className="table-light">
+        <tr>
+          <th>Type</th>
+          <th>Severity</th>
+        </tr>
+      </thead>
+      <tbody>
+        {alerts.map((alert, index) => (
+          <tr key={index}>
+            <td>{alert.type}</td>
+            <td className={getSeverityStyle(alert.severity)}>
+              {alert.severity}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+) : (
+  <p className="text-muted text-center">
+    No alerts to display. Please upload a log file and click submit.
+  </p>
+)}
+
               </div>
             </div>
           </div>
           <NewFooter />
-        </div>
+        </Container>
       </main>
     </>
   );

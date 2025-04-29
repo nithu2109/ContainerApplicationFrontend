@@ -26,7 +26,7 @@ const Sidebar = ({ activePage }) => {
           <Link to="/components/vulnerability">Vulnerability</Link>
         </li>
         <li className={activePage === "compliance" ? "active" : ""}>
-          <Link to="/components/compliancetable">Compliance</Link>
+          <Link to="/components/compliance">Compliance</Link>
         </li>
         <li className={activePage === "alert" ? "active" : ""}>
           <Link to="/components/alerts">Alerts</Link>

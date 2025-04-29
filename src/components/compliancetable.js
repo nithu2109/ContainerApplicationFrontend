@@ -5,17 +5,30 @@ import NewSidebar from "./NewSidebar";
 import Navbar from "./Navbar";
 import { AuthContext } from "./AuthContext";
 import "./compliancetable.css";
+import { useNavigate } from "react-router-dom";
 
 function ComplianceTable() {
   const [complianceData, setComplianceData] = useState([]);
   const { email } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
+    if (!email) {
+      navigate('/');
+      return;
+    }
+
+    console.log("🔵 Current email from AuthContext:", email);
+
     const fetchComplianceData = async () => {
       try {
-        const response = await fetch("http://localhost:8000/compliance-data");
+        console.log("🔵 Email being sent:", email);
+  
+        const response = await fetch(`http://localhost:8000/compliance-data?email=${email}`);
         const data = await response.json();
-
+  
+        console.log("🟡 Data received from backend:", data);
+  
         if (data.data.length > 0) {
           const formattedData = data.data.map((item) => ({
             id: item.id || "N/A",
@@ -30,9 +43,10 @@ function ComplianceTable() {
         console.error("❌ Error fetching compliance data:", error);
       }
     };
-
+  
     fetchComplianceData();
-  }, [email]);
+  }, [email, navigate]);
+  
 
   return (
     <>
@@ -55,7 +69,7 @@ function ComplianceTable() {
             </p>
             <div className="table-responsive">
               <table className="table compliance-table table-bordered">
-                <thead className="table-light">
+                <thead className="table-dark">
                   <tr>
                     <th>Check</th>
                     <th>Result</th>

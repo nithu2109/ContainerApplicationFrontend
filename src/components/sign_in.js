@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import './sign_in.css';
 import { FaUser, FaLock } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { AuthContext } from './AuthContext';
 
 const Sign_in = () => {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
+    const { setEmail: updateEmail } = useContext(AuthContext);
 
     const isValidEmail = (email) => {
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -35,12 +37,14 @@ const Sign_in = () => {
             });
 
             if (response.data.success) {
-                localStorage.setItem('userEmail', email); // store email for dashboard use
-                navigate('/components/dashboard'); // navigate to dashboard
+                localStorage.setItem('userEmail', email);
+                updateEmail(email);    
+                navigate('/components/dashboard');
             } else {
                 setMessage('❌ Invalid credentials');
             }
         } catch (err) {
+            console.error(err);
             setMessage(err.response?.data?.message || '❌ Sign in failed');
         }
     };
@@ -50,6 +54,7 @@ const Sign_in = () => {
     };
 
     return (
+        <div className='background'>
         <div className='wrapper'>
             <form onSubmit={handleSubmit}>
                 <h1>Sign In</h1>
@@ -82,11 +87,12 @@ const Sign_in = () => {
                 <button type="submit">Login</button>
 
                 <div className="SignUp-Link">
-                    <p>Don't have an account? <span onClick={handleGoToSignUp} style={{color: 'blue', cursor: 'pointer'}}>Sign Up</span></p>
+                    <p>Don't have an account? <span onClick={handleGoToSignUp} style={{ color: 'blue', cursor: 'pointer' }}>Sign Up</span></p>
                 </div>
 
                 {message && <p className="message">{message}</p>}
             </form>
+        </div>
         </div>
     );
 };

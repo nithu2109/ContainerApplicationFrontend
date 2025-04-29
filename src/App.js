@@ -56,7 +56,7 @@ export const App=()=> {
             }
           />
           <Route
-            path="/components/compliancetable"
+            path="/components/compliance"
             element={
               isAuthenticated ? <ComplianceTable /> : <Navigate to="/sign_in" />
             }

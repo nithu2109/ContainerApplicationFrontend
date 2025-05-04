@@ -33,13 +33,13 @@ const Sign_up = () => {
     const handleNameChange = (e) => {
         const value = e.target.value;
         setName(value);
-        setNameError(isValidName(value) ? '' : '❌ Name must be at least 2 letters (letters/spaces only)');
+        setNameError(isValidName(value) ? '' : 'Name must be at least 2 letters (letters/spaces only)');
     };
 
     const handleEmailChange = (e) => {
         const value = e.target.value;
         setEmail(value);
-        setEmailError(isValidEmail(value) ? '' : '❌ Invalid email format');
+        setEmailError(isValidEmail(value) ? '' : 'Invalid email format');
     };
 
     const handlePasswordChange = (e) => {
@@ -48,14 +48,14 @@ const Sign_up = () => {
         setPasswordError(
             isValidPassword(value)
                 ? ''
-                : '❌ Password must be 8+ characters with upper, lower, number, and special character'
+                : 'Password must be 8+ characters with upper, lower, number, and special character'
         );
     };
 
     const handleConfirmPasswordChange = (e) => {
         const value = e.target.value;
         setConfirmPassword(value);
-        setConfirmPasswordError(value === password ? '' : '❌ Passwords do not match');
+        setConfirmPasswordError(value === password ? '' : 'Passwords do not match');
     };
 
     // Submit
@@ -63,12 +63,12 @@ const Sign_up = () => {
         e.preventDefault();
 
         if (nameError || emailError || passwordError || confirmPasswordError) {
-            setMessage('❌ Please fix all errors before submitting');
+            setMessage('Please fix all errors before submitting');
             return;
         }
 
         if (!name || !email || !password || !confirmPassword) {
-            setMessage('❌ All fields are required');
+            setMessage('All fields are required');
             return;
         }
 
@@ -78,10 +78,10 @@ const Sign_up = () => {
                 email,
                 password
             });
-            setMessage(`✅ ${response.data.message}`);
-            setTimeout(() => navigate('/'), 2000);  // Redirect to Sign In
+            setMessage(`${response.data.message}`);
+            setTimeout(() => navigate('/'), 2000);
         } catch (err) {
-            setMessage(err.response?.data?.message || '❌ Sign up failed');
+            setMessage(err.response?.data?.message || 'Sign up failed');
         }
     };
 

@@ -21,12 +21,12 @@ const Sign_in = () => {
         e.preventDefault();
 
         if (!isValidEmail(email)) {
-            setMessage('❌ Please enter a valid email');
+            setMessage('Please enter a valid email');
             return;
         }
 
         if (password.trim() === '') {
-            setMessage('❌ Password cannot be empty');
+            setMessage('Password cannot be empty');
             return;
         }
 
@@ -41,11 +41,11 @@ const Sign_in = () => {
                 updateEmail(email);    
                 navigate('/components/dashboard');
             } else {
-                setMessage('❌ Invalid credentials');
+                setMessage('Invalid credentials');
             }
         } catch (err) {
             console.error(err);
-            setMessage(err.response?.data?.message || '❌ Sign in failed');
+            setMessage(err.response?.data?.message || 'Sign in failed');
         }
     };
 

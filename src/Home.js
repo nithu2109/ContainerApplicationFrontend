@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import NewFooter from "./components/NewFooter";
+import Footer from "./components/Footer";
 
 function Home() {
   return (
@@ -393,7 +393,7 @@ function Home() {
               </div>
             </div>
           </div>  
-          <NewFooter />
+          <Footer />
         </main>
       </div>
     </>

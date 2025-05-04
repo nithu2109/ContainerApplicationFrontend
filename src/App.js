@@ -5,12 +5,9 @@ import { BrowserRouter , Route, Routes, Navigate } from "react-router-dom";
 import Dashboard from "./components/dashboard";
 import UserForm from "./components/userform";
 import ComplianceTable from "./components/compliancetable";
-import Profile from "./components/profile";
 import Sign_in from "./components/sign_in";
 import Sign_up from "./components/sign_up";
 import MonitoringDataTable from "./components/monitoringtable";
-import Template from "./components/template";
-import Home from "./Home";
 import VulnerabilityData from "./components/vulnerabilitytable";
 import Alertstable from "./components/alertstable";
 import { AuthProvider } from "./components/AuthContext";
@@ -65,18 +62,6 @@ export const App=()=> {
             path="/components/alerts"
             element={
               isAuthenticated ? <Alertstable /> : <Navigate to="/sign_in" />
-            }
-          />
-          <Route
-            path="/components/template"
-            element={
-              isAuthenticated ? <Template /> : <Navigate to="/sign_in" />
-            }
-          />
-          <Route
-            path="/components/profile"
-            element={
-              isAuthenticated ? <Profile /> : <Navigate to="/sign_in" />
             }
           />
       </Routes>

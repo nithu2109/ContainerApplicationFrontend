@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Container } from "react-bootstrap";
-import NewFooter from "./NewFooter";
+import Footer from "./Footer";
 import NewSidebar from "./NewSidebar";
 import Navbar from "./Navbar";
 import "./alertsTable.css";
@@ -61,7 +61,7 @@ function Alertstable() {
       setAlerts(data);
       setSubmitted(true);
     } catch (error) {
-      console.error("❌ Error during alerts upload/fetch:", error);
+      console.error("Error during alerts upload/fetch:", error);
       setAlerts([]);
     } finally {
       setLoading(false);
@@ -100,7 +100,7 @@ function Alertstable() {
           <div className="row justify-content-center">
             <div className="col-lg-10 col-xl-9">
               <div className="form-card shadow-lg p-4 rounded bg-white">
-                <h3 className="text-center mb-4">🚨 Alert Monitoring</h3>
+                <h3 className="text-center mb-4">Alert Monitoring</h3>
 
                 {/* File Upload */}
                 <div className="d-flex flex-wrap gap-3 mb-4">
@@ -115,33 +115,32 @@ function Alertstable() {
                     onClick={handleSubmit}
                     disabled={!logFile || submitted}
                   >
-                    {loading ? "Loading..." : submitted ? "Submitted ✅" : "Submit Log File"}
+                    {loading ? "Loading..." : submitted ? "Submitted" : "Submit Log File"}
                   </button>
                 </div>
-
-                {/* Alert Table */}
-{alerts.length > 0 ? (
-  <div className="table-responsive">
-    <table className="table table-bordered table-striped">
-      <thead className="table-light">
-        <tr>
-          <th>Type</th>
-          <th>Severity</th>
-        </tr>
-      </thead>
-      <tbody>
-        {alerts.map((alert, index) => (
-          <tr key={index}>
-            <td>{alert.type}</td>
-            <td className={getSeverityStyle(alert.severity)}>
-              {alert.severity}
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-) : (
+                
+                {alerts.length > 0 ? (
+                  <div className="table-responsive">
+                    <table className="table table-bordered table-striped">
+                      <thead className="table-light">
+                        <tr>
+                          <th>Type</th>
+                          <th>Severity</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                            {alerts.map((alert, index) => (
+                              <tr key={index}>
+                                <td>{alert.type}</td>
+                                <td className={getSeverityStyle(alert.severity)}>
+                                  {alert.severity}
+                                </td>
+                              </tr>
+                                ))}
+                          </tbody>
+                    </table>
+                  </div>
+                ) : (
   <p className="text-muted text-center">
     No alerts to display. Please upload a log file and click submit.
   </p>
@@ -150,7 +149,7 @@ function Alertstable() {
               </div>
             </div>
           </div>
-          <NewFooter />
+          <Footer />
         </Container>
       </main>
     </>

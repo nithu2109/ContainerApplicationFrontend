@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import NewSidebar from "./NewSidebar";
 import Navbar from "./Navbar";
-import NewFooter from "./NewFooter";
+import Footer from "./Footer";
 import "./userform.css"; // your original css
 import axios from 'axios';
 
@@ -29,7 +29,7 @@ function UserForm() {
     e.preventDefault();
 
     if (!projectName || !zipFile || !dockerFile || !composeFile) {
-      setError("❌ Project name and all three files are required!");
+      setError("Project name and all three files are required!");
       return;
     }
 
@@ -47,14 +47,14 @@ function UserForm() {
 
       await axios.post('http://localhost:8000/upload', formData);
 
-      setsuccessMsg("🚀 Project submitted successfully!");
+      setsuccessMsg("Project submitted successfully!");
       setProjectName("");
       setZipFile(null);
       setDockerFile(null);
       setComposeFile(null);
     } catch (err) {
-      console.error("❌ Upload error:", err);
-      setError("❌ Server error. Please try again later.");
+      console.error("Upload error:", err);
+      setError("Server error. Please try again later.");
     } finally {
       setLoading(false);
     }
@@ -67,10 +67,10 @@ function UserForm() {
       <main className="main-content" style={{ marginLeft: "250px", paddingTop: "70px", backgroundColor: "#ffffff", minHeight: "100vh" }}>
         <div className="d-flex align-items-center justify-content-center" style={{ padding: "0.5rem 2rem" }}>
           <form className="form-container" onSubmit={handleSubmit} style={{ width: "100%", maxWidth: "600px" }}>
-            <h2 className="text-center fw-bold mb-4">📦 Submit Your Project</h2>
+            <h2 className="text-center fw-bold mb-4">Submit Your Project</h2>
 
             <div className="mb-3">
-              <label className="form-label fw-bold">🔤 Project Name</label>
+              <label className="form-label fw-bold">Project Name</label>
               <input
                 type="text"
                 className="form-control"
@@ -82,7 +82,7 @@ function UserForm() {
             </div>
 
             <div className="mb-3">
-              <label className="form-label fw-bold">📁 Upload Zip File</label>
+              <label className="form-label fw-bold">Upload Zip File</label>
               <input
                 type="file"
                 className="form-control"
@@ -92,7 +92,7 @@ function UserForm() {
             </div>
 
             <div className="mb-3">
-              <label className="form-label fw-bold">🐳 Upload Dockerfile</label>
+              <label className="form-label fw-bold">Upload Dockerfile</label>
               <input
                 type="file"
                 className="form-control"
@@ -102,7 +102,7 @@ function UserForm() {
             </div>
 
             <div className="mb-3">
-              <label className="form-label fw-bold">🧩 Upload Compose File</label>
+              <label className="form-label fw-bold">Upload Compose File</label>
               <input
                 type="file"
                 className="form-control"
@@ -112,7 +112,7 @@ function UserForm() {
             </div>
 
             <div className="mb-4">
-              <label className="form-label fw-bold d-block">🛡️ Security Checks</label>
+              <label className="form-label fw-bold d-block">Security Checks</label>
               <div className="d-flex flex-wrap gap-3">
                 <div className="form-check">
                   <input
@@ -165,7 +165,7 @@ function UserForm() {
             </div>
           </form>
         </div>
-        <NewFooter />
+        <Footer />
       </main>
     </>
   );

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import NewFooter from "./components/NewFooter";
+import Footer from "./components/Footer";
 
 function Home() {
   return (
@@ -64,7 +64,7 @@ function Home() {
                   <span className="nav-link-text ms-1">Vulnerability</span>
                 </Link>
               </li><li className="nav-item">
-                <Link className="nav-link text-white " to="/components/compliancetable">
+                <Link className="nav-link text-white " to="/components/compliance">
                   <div className="text-white text-center me-2 d-flex align-items-center justify-content-center">
                     <i className="material-icons opacity-10">grading</i>
                   </div>
@@ -393,7 +393,7 @@ function Home() {
               </div>
             </div>
           </div>  
-          <NewFooter />
+          <Footer />
         </main>
       </div>
     </>

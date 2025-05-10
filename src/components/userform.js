@@ -1,9 +1,9 @@
-import React, { useState, useContext } from "react";
-import { AuthContext } from "./AuthContext";
+import React, { useState } from "react";
 import NewSidebar from "./NewSidebar";
 import Navbar from "./Navbar";
-import NewFooter from "./NewFooter";
-import "./userform.css";
+import Footer from "./Footer";
+import "./userform.css"; // your original css
+import axios from 'axios';
 
 function UserForm() {
   const [projectName, setProjectName] = useState("");
@@ -15,10 +15,11 @@ function UserForm() {
     complianceCheck: false,
     runtimeAnalysis: false,
   });
+  
+  const email = localStorage.getItem('userEmail');
   const [error, setError] = useState("");
   const [successMsg, setsuccessMsg] = useState("");
   const [loading, setLoading] = useState(false);
-  const { email } = useContext(AuthContext);
 
   const handleSecurityCheckChange = (e) => {
     setSecurityChecks({ ...securityChecks, [e.target.id]: e.target.checked });
@@ -28,7 +29,7 @@ function UserForm() {
     e.preventDefault();
 
     if (!projectName || !zipFile || !dockerFile || !composeFile) {
-      setError("❌ Project name and all three files are required!");
+      setError("Project name and all three files are required!");
       return;
     }
 
@@ -39,41 +40,21 @@ function UserForm() {
     try {
       const formData = new FormData();
       formData.append("projectName", projectName);
-      formData.append("email", localStorage.getItem("userEmail"));
+      formData.append("email", email);
       formData.append("zipFile", zipFile);
       formData.append("dockerFile", dockerFile);
       formData.append("composeFile", composeFile);
 
-      console.log("📤 Submitting project:", {
-        projectName,
-        email: localStorage.getItem("userEmail"),
-        zipFileName: zipFile?.name,
-        dockerFileName: dockerFile?.name,
-        composeFileName: composeFile?.name,
-      });
+      await axios.post('http://localhost:8000/upload', formData);
 
-      const response = await fetch("http://localhost:8000/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      console.log("📧 Sending email to backend:", email);
-
-      const result = await response.json();
-      console.log("✅ Server response:", result);
-
-      if (response.ok) {
-        setsuccessMsg("🚀 Project submitted successfully!");
-        setProjectName("");
-        setZipFile(null);
-        setDockerFile(null);
-        setComposeFile(null);
-      } else {
-        setError(result.error || "❌ Failed to upload project. Please try again.");
-      }
+      setsuccessMsg("Project submitted successfully!");
+      setProjectName("");
+      setZipFile(null);
+      setDockerFile(null);
+      setComposeFile(null);
     } catch (err) {
-      console.error("❌ Upload error:", err);
-      setError("❌ Server error. Please try again later.");
+      console.error("Upload error:", err);
+      setError("Server error. Please try again later.");
     } finally {
       setLoading(false);
     }
@@ -83,81 +64,108 @@ function UserForm() {
     <>
       <NewSidebar activePage="userform" />
       <Navbar />
-      <main className="main-content" style={{ marginLeft: "250px", backgroundColor: "#fff", minHeight: "100vh" }}>
-        <div className="d-flex align-items-center justify-content-center" style={{ padding: "4rem 1rem" }}>
-          <div className="form-card">
-            <h3 className="text-center mb-4 fw-bold">📦 Submit Your Project</h3>
-            <form onSubmit={handleSubmit}>
-              <div className="mb-3">
-                <label className="form-label fw-bold">🔤 Project Name</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Enter project name"
-                  value={projectName}
-                  onChange={(e) => setProjectName(e.target.value)}
-                />
-              </div>
+      <main className="main-content" style={{ marginLeft: "250px", paddingTop: "70px", backgroundColor: "#ffffff", minHeight: "100vh" }}>
+        <div className="d-flex align-items-center justify-content-center" style={{ padding: "0.5rem 2rem" }}>
+          <form className="form-container" onSubmit={handleSubmit} style={{ width: "100%", maxWidth: "600px" }}>
+            <h2 className="text-center fw-bold mb-4">Submit Your Project</h2>
 
-              {[
-                { label: "📁 Upload Zip File", file: zipFile, setFile: setZipFile },
-                { label: "🐳 Upload Dockerfile", file: dockerFile, setFile: setDockerFile },
-                { label: "🧩 Upload Compose File", file: composeFile, setFile: setComposeFile },
-              ].map(({ label, file, setFile }, index) => (
-                <div className="mb-3" key={index}>
-                  <label className="form-label fw-bold">{label}</label>
-                  <div className="d-flex gap-2">
-                    <input
-                      type="file"
-                      className="form-control"
-                      onChange={(e) => setFile(e.target.files[0])}
-                    />
-                    {file && (
-                      <button type="button" className="btn btn-sm btn-outline-danger" onClick={() => setFile(null)}>
-                        ❌
-                      </button>
-                    )}
-                  </div>
-                  {file && <small className="text-muted">{file.name}</small>}
+            <div className="mb-3">
+              <label className="form-label fw-bold">Project Name</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Enter project name"
+                value={projectName}
+                onChange={(e) => setProjectName(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="mb-3">
+              <label className="form-label fw-bold">Upload Zip File</label>
+              <input
+                type="file"
+                className="form-control"
+                onChange={(e) => setZipFile(e.target.files[0])}
+                required
+              />
+            </div>
+
+            <div className="mb-3">
+              <label className="form-label fw-bold">Upload Dockerfile</label>
+              <input
+                type="file"
+                className="form-control"
+                onChange={(e) => setDockerFile(e.target.files[0])}
+                required
+              />
+            </div>
+
+            <div className="mb-3">
+              <label className="form-label fw-bold">Upload Compose File</label>
+              <input
+                type="file"
+                className="form-control"
+                onChange={(e) => setComposeFile(e.target.files[0])}
+                required
+              />
+            </div>
+
+            <div className="mb-4">
+              <label className="form-label fw-bold d-block">Security Checks</label>
+              <div className="d-flex flex-wrap gap-3">
+                <div className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="vulnerabilityScan"
+                    checked={securityChecks.vulnerabilityScan}
+                    onChange={handleSecurityCheckChange}
+                  />
+                  <label className="form-check-label" htmlFor="vulnerabilityScan">
+                    Vulnerability Scan
+                  </label>
                 </div>
-              ))}
 
-              <div className="mb-3">
-                <label className="form-label fw-bold d-block">🛡️ Security Checks</label>
-                <div className="d-flex flex-wrap gap-4">
-                  {["vulnerabilityScan", "complianceCheck", "runtimeAnalysis"].map((key) => (
-                    <div className="form-check" key={key}>
-                      <input
-                        type="checkbox"
-                        className="form-check-input"
-                        id={key}
-                        checked={securityChecks[key]}
-                        onChange={handleSecurityCheckChange}
-                      />
-                      <label className="form-check-label">
-                        {key === "vulnerabilityScan"
-                          ? "Vulnerability Scan"
-                          : key === "complianceCheck"
-                          ? "Compliance Check"
-                          : "Runtime Analysis"}
-                      </label>
-                    </div>
-                  ))}
+                <div className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="complianceCheck"
+                    checked={securityChecks.complianceCheck}
+                    onChange={handleSecurityCheckChange}
+                  />
+                  <label className="form-check-label" htmlFor="complianceCheck">
+                    Compliance Check
+                  </label>
+                </div>
+
+                <div className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="runtimeAnalysis"
+                    checked={securityChecks.runtimeAnalysis}
+                    onChange={handleSecurityCheckChange}
+                  />
+                  <label className="form-check-label" htmlFor="runtimeAnalysis">
+                    Runtime Analysis
+                  </label>
                 </div>
               </div>
+            </div>
 
-              {error && <div className="alert alert-danger">{error}</div>}
-              {successMsg && <div className="alert alert-success">{successMsg}</div>}
+            {error && <div className="alert alert-danger">{error}</div>}
+            {successMsg && <div className="alert alert-success">{successMsg}</div>}
 
-              <div className="text-center">
-                <button type="submit" className="btn btn-primary px-5 py-2">
-                  {loading ? "Uploading..." : "Submit"}
-                </button>
-              </div>
-            </form>
-          </div>
+            <div className="text-center">
+              <button type="submit" className="btn btn-primary px-5 py-2">
+                {loading ? "Uploading..." : "Submit"}
+              </button>
+            </div>
+          </form>
         </div>
-        <NewFooter />
+        <Footer />
       </main>
     </>
   );
